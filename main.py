@@ -13,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='NewImageGeneratorZVD22',
-    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/c437/7099cf7713bfd81662c5e4da0b01ce80c2daafb4a2d1326f7fd0541d4e0ac437.jpg',
-    auth_token="52139de14827dd23-aa10a3f48f7b8005-1c2df36521587b45"  
+    name='ViberImgGenZVD22',
+    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/7a79/ea1b44bd126efb7b41b8287c94919ebec3f329f99eac4c00241274b577fd7a79.jpg',
+    auth_token="5213cb7e4567dca0-d4405daf51c55dad-2ac214f785263ae4"  
 ))
 
 openai_api_key = "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"  
@@ -63,10 +63,9 @@ def generate_image(prompt):
         logger.error("Error in image generation")
         return "Извините, произошла ошибка при генерации изображения."
 
-try:
-    viber.set_webhook('https://worker-production-5dfa.up.railway.app/viber-webhook')
-except Exception as e:
-    logger.error(f"Error setting webhook: {e}")
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
+
+viber.set_webhook('https://worker-production-7610.up.railway.app')
