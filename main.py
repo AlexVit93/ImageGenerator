@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='ImageGenerator',
-    avatar='',
+    name='ImageGeneratorZVD22',
+    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/c22d/4f3c8edfa8735412527f0916ab07ba9bd5ddbd3e05444877ca0e83c6dd9ec22d.jpg',
     auth_token=VIBER_AUTH_TOKEN  
 ))
 
