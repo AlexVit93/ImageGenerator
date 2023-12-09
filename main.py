@@ -107,5 +107,6 @@ def generate_image(prompt):
 # viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
 
 if __name__ == "__main__":
-    db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 7570)), debug=True)
