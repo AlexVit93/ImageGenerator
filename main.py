@@ -8,7 +8,6 @@ import requests
 import json
 from config import VIBER_AUTH_TOKEN, OPENAI_API_KEY
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -54,14 +53,20 @@ def generate_image(prompt):
 
     response = requests.post('https://api.openai.com/v1/images/generations', headers=headers, json=data)
     if response.status_code == 200:
-        image_url = json.loads(response.text)['data'][0]['url']
-        return image_url
+        try:
+            image_url = response.json().get('data', [{}])[0].get('url', "URL изображения не найден")
+            return image_url
+        except Exception as e:
+            logger.error(f"Error parsing response: {e}")
+            return "Ошибка при разборе ответа от API."
     else:
         logger.error("Error in image generation")
         return "Извините, произошла ошибка при генерации изображения."
 
-
-viber.set_webhook('https://worker-production-5dfa.up.railway.app/viber-webhook')
+try:
+    viber.set_webhook('https://worker-production-5dfa.up.railway.app/viber-webhook')
+except Exception as e:
+    logger.error(f"Error setting webhook: {e}")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
