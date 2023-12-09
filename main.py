@@ -63,6 +63,8 @@ def generate_image(prompt):
             return image_url
         except Exception as e:
             logger.error(f"Error parsing response: {e}")
+            # Добавьте больше логирования
+            logger.error(f"Full error: {e}, Response: {response.text}")
             return "Ошибка при разборе ответа от API."
     else:
         logger.error("Error in image generation")
