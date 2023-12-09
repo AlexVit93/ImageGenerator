@@ -1,3 +1,5 @@
 Flask==3.0.0
 viberbot==1.0.12
 requests==2.31.0
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.23

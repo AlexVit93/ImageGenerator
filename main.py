@@ -1,6 +1,8 @@
 import os
 import logging
+from datetime import datetime
 from flask import Flask, request, Response
+from flask_sqlalchemy import SQLAlchemy
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import TextMessage, PictureMessage
@@ -14,6 +16,15 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///viber_requests.db'
+db = SQLAlchemy(app)
+
+class UserRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String, unique=True, nullable=False)
+    last_request = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 viber = Api(BotConfiguration(
     name='GeneratorImageZVD22',
     avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/f56e/239aafb14ef8d8170306d44e50ccda5c65b56882d61b98bb8463ddc6c25af56e.jpg',
@@ -39,6 +50,23 @@ def incoming():
         ])
     elif isinstance(viber_request, ViberMessageRequest):
         message_text = viber_request.message.text
+        user_id = viber_request.sender.id
+
+        # Проверка на дубликаты
+        last_request = UserRequest.query.filter_by(user_id=user_id).first()
+        if last_request and last_request.last_request == message_text:
+            logger.info("Duplicate request detected. Ignoring.")
+            return Response(status=200)
+
+        if last_request:
+            last_request.last_request = message_text
+            last_request.timestamp = datetime.utcnow()
+        else:
+            new_request = UserRequest(user_id=user_id, last_request=message_text)
+            db.session.add(new_request)
+
+        db.session.commit()
+
         logger.info(f"Received message text: {message_text}")
         response = generate_image(message_text)
         if response.startswith("http"):
@@ -76,5 +104,8 @@ def generate_image(prompt):
         logger.error(f"Error parsing response: {e}")
         return "Ошибка при разборе ответа от API."
 
+# viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
+
 if __name__ == "__main__":
+    db.create_all()
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 7570)), debug=True)
