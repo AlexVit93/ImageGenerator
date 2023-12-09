@@ -1,3 +1,4 @@
+import os
 import logging
 from flask import Flask, request, Response
 from viberbot import Api
@@ -70,6 +71,5 @@ def generate_image(prompt):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=7590, debug=True)
-    viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 7570)), debug=True)
     
