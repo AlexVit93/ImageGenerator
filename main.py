@@ -6,7 +6,7 @@ from viberbot.api.messages import TextMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 import requests
 import json
-from config import VIBER_AUTH_TOKEN, OPENAI_API_KEY
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,10 +15,10 @@ app = Flask(__name__)
 viber = Api(BotConfiguration(
     name='NewImageGeneratorZVD22',
     avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/c437/7099cf7713bfd81662c5e4da0b01ce80c2daafb4a2d1326f7fd0541d4e0ac437.jpg',
-    auth_token=VIBER_AUTH_TOKEN  
+    auth_token="52139de14827dd23-aa10a3f48f7b8005-1c2df36521587b45"  
 ))
 
-openai_api_key = OPENAI_API_KEY  
+openai_api_key = "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"  
 
 @app.route('/viber-webhook', methods=['POST'])
 def incoming():
