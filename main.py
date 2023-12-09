@@ -26,8 +26,8 @@ class UserRequest(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 viber = Api(BotConfiguration(
-    name='GeneratorImageZVD22',
-    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/f56e/239aafb14ef8d8170306d44e50ccda5c65b56882d61b98bb8463ddc6c25af56e.jpg',
+    name='ImgGen Dalle',
+    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/e180/79610f57e59ea4bffdf21d261950cfca8d0ea042f0cfd4b7e8606f6d88c3e180.jpg',
     auth_token=VIBER_TOKEN  
 ))
 
