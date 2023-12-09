@@ -67,5 +67,4 @@ def generate_image(prompt):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
-
-viber.set_webhook('https://worker-production-7610.up.railway.app')
+    viber.set_webhook('https://worker-production-7610.up.railway.app/viber-webhook')
