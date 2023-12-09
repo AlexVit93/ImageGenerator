@@ -68,7 +68,7 @@ def generate_image(prompt):
         logger.error("Error in image generation")
         return "Извините, произошла ошибка при генерации изображения."
 
-viber.set_webhook('worker-production-0a9f.up.railway.app')
+viber.set_webhook('https://worker-production-0a9f.up.railway.app')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7590, debug=True)
