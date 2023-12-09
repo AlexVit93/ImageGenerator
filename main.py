@@ -3,7 +3,7 @@ import logging
 from flask import Flask, request, Response
 from viberbot import Api
 from viberbot.api.bot_configuration import BotConfiguration
-from viberbot.api.messages import TextMessage
+from viberbot.api.messages import TextMessage, PictureMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 import requests
 from config import VIBER_TOKEN, OPEN_AI_KEY
@@ -24,8 +24,8 @@ openai_api_key = OPEN_AI_KEY
 
 @app.route('/start-viber', methods=['POST'])
 def incoming():
-    logging.debug("received request. post data: {0}".format(request.get_data()))
-    
+    logger.debug("Received request. Post data: {0}".format(request.get_data()))
+
     if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
         return Response(status=403)
 
@@ -33,15 +33,17 @@ def incoming():
 
     if isinstance(viber_request, ViberConversationStartedRequest):
         viber.send_messages(viber_request.user.id, [
-            TextMessage(text="Привет! Скажи, какое изображение ты хочешь получить сейчас?")
+            TextMessage(text="Привет! Какое изображение ты хочешь получить?")
         ])
     elif isinstance(viber_request, ViberMessageRequest):
         message_text = viber_request.message.text
         response = generate_image(message_text)
-        viber.send_messages(viber_request.sender.id, [
-            TextMessage(text="Твое изображение будет готово примерно через 2-3 минуты"),
-            TextMessage(text=response)
-        ])
+        if response.startswith("http"):
+            viber.send_messages(viber_request.sender.id, [PictureMessage(media=response)])
+        else:
+            viber.send_messages(viber_request.sender.id, [
+                TextMessage(text=response)
+            ])
 
     return Response(status=200)
 
@@ -57,22 +59,19 @@ def generate_image(prompt):
         'n': 1
     }
 
-    response = requests.post('https://api.openai.com/v1/images/generations', headers=headers, json=data)
-    if response.status_code == 200:
-        try:
-            image_url = response.json().get('data', [{}])[0].get('url', "URL изображения не найден")
-            return image_url
-        except Exception as e:
-            logger.error(f"Error parsing response: {e}")
-            # Добавьте больше логирования
-            logger.error(f"Full error: {e}, Response: {response.text}")
-            return "Ошибка при разборе ответа от API."
-    else:
-        logger.error("Error in image generation")
+    try:
+        response = requests.post('https://api.openai.com/v1/images/generations', headers=headers, json=data)
+        response.raise_for_status()
+        image_url = response.json().get('data', [{}])[0].get('url', "URL изображения не найден")
+        return image_url
+    except requests.exceptions.HTTPError as http_err:
+        logger.error(f"HTTP error occurred: {http_err}")
         return "Извините, произошла ошибка при генерации изображения."
+    except Exception as e:
+        logger.error(f"Error parsing response: {e}")
+        return "Ошибка при разборе ответа от API."
 
 viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 7570)), debug=True)
-    
