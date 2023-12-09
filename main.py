@@ -13,16 +13,21 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='ViberImgGenZVD22',
-    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/7a79/ea1b44bd126efb7b41b8287c94919ebec3f329f99eac4c00241274b577fd7a79.jpg',
-    auth_token="5213cb7e4567dca0-d4405daf51c55dad-2ac214f785263ae4"  
+    name='GeneratorImageZVD22',
+    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/f56e/239aafb14ef8d8170306d44e50ccda5c65b56882d61b98bb8463ddc6c25af56e.jpg',
+    auth_token="52140c8a4c27e541-3cb4c10a0a4f4a22-899a23cf49f3cc8f"  
 ))
 
 openai_api_key = "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"  
 
-@app.route('/viber-webhook', methods=['POST'])
+@app.route('/start-viber', methods=['POST'])
 def incoming():
     logger.info("Received a request")
+    logging.debug("received request. post data: {0}".format(request.get_data()))
+    
+    if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
+        return Response(status=403)
+
     viber_request = viber.parse_request(request.get_data())
 
     if isinstance(viber_request, ViberConversationStartedRequest):
@@ -63,8 +68,8 @@ def generate_image(prompt):
         logger.error("Error in image generation")
         return "Извините, произошла ошибка при генерации изображения."
 
-
+viber.set_webhook('worker-production-0a9f.up.railway.app/start-viber')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
-    viber.set_webhook('https://worker-production-7610.up.railway.app/viber-webhook')
+    
