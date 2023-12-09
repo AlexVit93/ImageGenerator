@@ -37,13 +37,16 @@ def incoming():
         ])
     elif isinstance(viber_request, ViberMessageRequest):
         message_text = viber_request.message.text
-        response = generate_image(message_text)
-        if response.startswith("http"):
-            viber.send_messages(viber_request.sender.id, [PictureMessage(media=response)])
-        else:
-            viber.send_messages(viber_request.sender.id, [
-                TextMessage(text=response)
-            ])
+        # Проверяем, отправлялось ли уже изображение по этому запросу
+        if not hasattr(viber_request, 'image_sent'):
+            response = generate_image(message_text)
+            if response.startswith("http"):
+                viber.send_messages(viber_request.sender.id, [PictureMessage(media=response)])
+                viber_request.image_sent = True
+            else:
+                viber.send_messages(viber_request.sender.id, [
+                    TextMessage(text=response)
+                ])
 
     return Response(status=200)
 
