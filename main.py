@@ -104,7 +104,7 @@ def generate_image(prompt):
         logger.error(f"Error parsing response: {e}")
         return "Ошибка при разборе ответа от API."
 
-# viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
+viber.set_webhook("https://worker-production-f358.up.railway.app/start-viber")
 
 if __name__ == "__main__":
     with app.app_context():
