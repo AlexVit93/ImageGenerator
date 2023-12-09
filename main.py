@@ -14,14 +14,14 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 viber = Api(BotConfiguration(
-    name='ImageGeneratorZVD22',
-    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/c22d/4f3c8edfa8735412527f0916ab07ba9bd5ddbd3e05444877ca0e83c6dd9ec22d.jpg',
+    name='NewImageGeneratorZVD22',
+    avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/c437/7099cf7713bfd81662c5e4da0b01ce80c2daafb4a2d1326f7fd0541d4e0ac437.jpg',
     auth_token=VIBER_AUTH_TOKEN  
 ))
 
 openai_api_key = OPENAI_API_KEY  
 
-@app.route('/', methods=['POST'])
+@app.route('/viber-webhook', methods=['POST'])
 def incoming():
     logger.info("Received a request")
     viber_request = viber.parse_request(request.get_data())
