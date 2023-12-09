@@ -22,7 +22,6 @@ openai_api_key = "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"
 
 @app.route('/start-viber', methods=['POST'])
 def incoming():
-    logger.info("Received a request")
     logging.debug("received request. post data: {0}".format(request.get_data()))
     
     if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
@@ -68,7 +67,7 @@ def generate_image(prompt):
         logger.error("Error in image generation")
         return "Извините, произошла ошибка при генерации изображения."
 
-viber.set_webhook('https://worker-production-0a9f.up.railway.app')
+viber.set_webhook("https://worker-production-0a9f.up.railway.app/start-viber")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7590, debug=True)
