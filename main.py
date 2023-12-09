@@ -5,7 +5,7 @@ from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import TextMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 import requests
-import json
+
 
 
 logging.basicConfig(level=logging.INFO)
