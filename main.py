@@ -22,7 +22,7 @@ viber = Api(BotConfiguration(
 
 openai_api_key = OPEN_AI_KEY
 
-@app.route('/', methods=['POST'])
+@app.route('/start-viber', methods=['POST'])
 def incoming():
     logger.debug(f"Received request. Post data: {request.get_data()}")
 
