@@ -6,6 +6,7 @@ from viberbot.api.bot_configuration import BotConfiguration
 from viberbot.api.messages import TextMessage
 from viberbot.api.viber_requests import ViberConversationStartedRequest, ViberMessageRequest
 import requests
+from config import VIBER_TOKEN, OPEN_AI_KEY
 
 
 
@@ -16,10 +17,10 @@ app = Flask(__name__)
 viber = Api(BotConfiguration(
     name='GeneratorImageZVD22',
     avatar='https://dl-media.viber.com/1/share/2/long/vibes/icon/image/0x0/f56e/239aafb14ef8d8170306d44e50ccda5c65b56882d61b98bb8463ddc6c25af56e.jpg',
-    auth_token="52140c8a4c27e541-3cb4c10a0a4f4a22-899a23cf49f3cc8f"  
+    auth_token=VIBER_TOKEN  
 ))
 
-openai_api_key = "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"  
+openai_api_key = OPEN_AI_KEY
 
 @app.route('/start-viber', methods=['POST'])
 def incoming():
@@ -52,7 +53,7 @@ def generate_image(prompt):
 
     data = {
         'prompt': prompt,
-        'size': '300x300',
+        'size': '256x256',
         'n': 1
     }
 
